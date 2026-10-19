@@ -4,6 +4,8 @@ out/
 *.tsbuildinfo
 .env*
 !.env.example
+data/*.sqlite
+data/*.sqlite-*
 
 *.sqlite
 *.sqlite-*
