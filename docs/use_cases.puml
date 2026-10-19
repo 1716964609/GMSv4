@@ -1,0 +1,17 @@
+@startuml
+
+title GMS v4 - Use Case Diagram
+
+left to right direction
+
+actor "Operator" as Operator
+
+rectangle "GMS v4" {
+
+    usecase "UC-001\nTranslate Text" as UC001
+
+}
+
+Operator --> UC001
+
+@enduml
