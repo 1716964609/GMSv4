@@ -2,8 +2,16 @@ node_modules/
 .next/
 out/
 *.tsbuildinfo
+
+# Local environment files; only the safe template is publishable.
 .env*
 !.env.example
+
+# Private key material.
+*.pem
+*.key
+
+# Local runtime and test artifacts.
 data/*.sqlite
 data/*.sqlite-*
 test-results/
