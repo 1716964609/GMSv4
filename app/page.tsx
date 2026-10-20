@@ -49,7 +49,7 @@ export default function HomePage() {
       parseGlossaryJson(JSON.parse(await file.text()));
       setGlossaryFile(file);
     } catch (fileError) {
-      setGlossaryError(fileError instanceof Error ? fileError.message : "Glossary JSON is invalid.");
+      setGlossaryError(fileError instanceof SyntaxError ? "Glossary JSON is invalid." : fileError instanceof Error ? fileError.message : "Glossary JSON is invalid.");
     }
   }
 

@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/**/*.test.ts",
     "test:translation": "tsx scripts/verify-translation.ts",
+    "test:e2e": "tsx scripts/run-e2e.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:verify": "tsx scripts/verify-database.ts"
@@ -23,6 +24,7 @@
     "@types/node": "^22.15.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@playwright/test": "^1.52.0",
     "drizzle-kit": "^0.31.4",
     "tsx": "^4.19.4",
     "typescript": "^5.8.0"

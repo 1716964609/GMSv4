@@ -6,6 +6,8 @@ out/
 !.env.example
 data/*.sqlite
 data/*.sqlite-*
+test-results/
+playwright-report/
 
 *.sqlite
 *.sqlite-*
