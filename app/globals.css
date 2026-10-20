@@ -54,3 +54,70 @@ h1 {
   color: #536179;
   line-height: 1.6;
 }
+
+form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  color: #34415a;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+textarea,
+select,
+input[type="file"] {
+  width: 100%;
+  border: 1px solid #c7d3e3;
+  border-radius: 0.45rem;
+  padding: 0.7rem;
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+button {
+  width: fit-content;
+  border: 0;
+  border-radius: 0.45rem;
+  padding: 0.75rem 1.1rem;
+  background: #2864c7;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.error {
+  color: #a52a2a;
+  font-weight: 700;
+}
+
+.result {
+  margin-top: 2rem;
+  border-top: 1px solid #d9e2ef;
+  padding-top: 1.5rem;
+}
+
+.result p {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}

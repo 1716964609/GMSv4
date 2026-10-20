@@ -36,7 +36,9 @@ The GPT model reviews and refines the initial translation to improve translation
 
 The GPT model must be instructed to preserve the user-specified target terminology when the corresponding source terms are applicable.
 
-The resulting translation is returned to the user as the final output.
+The Final Translation is returned to the Operator
+only after both translation stages and any required
+glossary persistence operation have completed successfully.
 
 The initial application supports direct use by a single user without account registration or login.
 
@@ -49,7 +51,7 @@ The initial application supports direct use by a single user without account reg
 | FR-001 | Source Text Input | The user can enter original text into a browser text box, specify source and target languages, and submit a translation request. The Submit button remains disabled when the source text is empty. |
 | FR-002 | Machine Translation Provider | The application uses the DeepL API as its sole machine translation provider. |
 | FR-003 | LLM Provider | The application uses a single GPT model through the OpenAI API as its sole LLM for translation post-editing. |
-| FR-004 | Glossary Upload and Storage | The user can upload a glossary file in JSON format. The application stores the uploaded glossary in its database and applies it to the current translation request. |
+| FR-004 | Glossary Upload and Accumulation | The Operator can optionally upload a glossary file in JSON format. Only entries from the current upload are used for the current translation. After both translation stages succeed, the application appends the uploaded entries to the persistent Glossary before returning a successful response. |
 | FR-005 | Glossary-Aware Machine Translation | The application submits the original text, selected language pair, and applicable user-provided glossary terminology to DeepL. DeepL produces the initial translated text. |
 | FR-006 | Glossary-Aware LLM Post-Editing | After FR-005, the application provides the original text, the DeepL translation, and the applicable glossary terminology to the GPT model. The model refines the translation and is instructed to follow the user-defined target terminology. Its output contains only the final translated text. |
 | FR-007 | Translation Output | The application displays the final translated text in the browser and provides a Download button that saves the translation as a TXT file. |

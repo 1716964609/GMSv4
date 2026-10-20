@@ -205,6 +205,12 @@ The Uploaded Glossary is provided as a JSON file.
 
 It contains zero or more Glossary Entries.
 
+An Uploaded Glossary is represented as a JSON array
+of Glossary Entry objects.
+
+Each object contains exactly the four canonical
+Glossary Entry fields.
+
 Only entries from this Uploaded Glossary
 are used for terminology alignment during
 the current translation process.
@@ -325,12 +331,18 @@ current Uploaded Glossary.
 
 ### DR-005 — Glossary Accumulation
 
-After translation, Glossary Entries from the
-current Uploaded Glossary are appended to the
-persistent Glossary.
+After both translation stages complete successfully,
+Glossary Entries from the current Uploaded Glossary
+are appended to the persistent Glossary.
 
-Previously stored entries are not replaced
-or deleted by this operation.
+The required append operation must complete
+successfully before the Final Translation is
+returned to the Operator.
+
+Previously stored entries are not replaced or deleted.
+
+If persistence fails, the Translation Request
+is treated as unsuccessful.
 
 ### DR-006 — Transient Translation Data
 
