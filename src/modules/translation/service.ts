@@ -1,4 +1,9 @@
 import type { GlossaryPersistence, MachineTranslationProvider, PostEditingProvider, TranslationRequest } from "./types";
+import type { GlossaryEntry } from "../glossary/types";
+
+function glossaryLanguageRoot(language: string) {
+  return language.trim().split(/[-_]/, 1)[0].toUpperCase();
+}
 
 export class TranslationWorkflowError extends Error {
   constructor(message: string, options?: { cause?: unknown }) {
@@ -14,13 +19,18 @@ export function createTranslationService(dependencies: {
 }) {
   return {
     async translate(request: TranslationRequest) {
+      const applicableGlossary = request.glossary.filter((entry: GlossaryEntry) =>
+        glossaryLanguageRoot(entry.source_lang) === glossaryLanguageRoot(request.sourceLang) &&
+        glossaryLanguageRoot(entry.target_lang) === glossaryLanguageRoot(request.targetLang)
+      );
+
       let intermediateTranslation: string;
       try {
         intermediateTranslation = await dependencies.machineTranslator.translate({
           sourceText: request.sourceText,
           sourceLang: request.sourceLang,
           targetLang: request.targetLang,
-          glossary: request.glossary
+          glossary: applicableGlossary
         });
       } catch (error) {
         throw new TranslationWorkflowError("DeepL translation failed.", { cause: error });
@@ -33,7 +43,7 @@ export function createTranslationService(dependencies: {
           intermediateTranslation,
           sourceLang: request.sourceLang,
           targetLang: request.targetLang,
-          glossary: request.glossary
+          glossary: applicableGlossary
         });
       } catch (error) {
         throw new TranslationWorkflowError("GPT post-editing failed.", { cause: error });

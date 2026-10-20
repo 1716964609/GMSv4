@@ -53,10 +53,55 @@ test("UC-001 executes DeepL before GPT and passes only the current upload", asyn
 
   assert.deepEqual(events, ["deepl", "gpt", "persist"]);
   assert.equal(result.finalTranslation, "final");
-  assert.equal((deepLInput as { glossary: GlossaryEntry[] }).glossary, currentGlossary);
+  assert.deepEqual((deepLInput as { glossary: GlossaryEntry[] }).glossary, currentGlossary);
   assert.equal((gptInput as { intermediateTranslation: string }).intermediateTranslation, "intermediate");
-  assert.equal((gptInput as { glossary: GlossaryEntry[] }).glossary, currentGlossary);
+  assert.deepEqual((gptInput as { glossary: GlossaryEntry[] }).glossary, currentGlossary);
   assert.equal(persisted, currentGlossary);
+});
+
+test("UC-001 sends only applicable current-upload entries to providers but persists the full upload", async () => {
+  const otherLanguageEntry: GlossaryEntry = {
+    source_term: "heart failure",
+    target_term: "Herzinsuffizienz",
+    source_lang: "EN",
+    target_lang: "DE"
+  };
+  let providerGlossary: GlossaryEntry[] | undefined;
+  let persisted: GlossaryEntry[] | undefined;
+  const service = createTranslationService({
+    machineTranslator: {
+      async translate(input) {
+        providerGlossary = input.glossary;
+        return "intermediate";
+      }
+    },
+    postEditor: { async edit() { return "final"; } },
+    glossaryPersistence: { async appendAtomic(entries) { persisted = entries; } }
+  });
+
+  await service.translate(request({ glossary: [...currentGlossary, otherLanguageEntry] }));
+
+  assert.deepEqual(providerGlossary, currentGlossary);
+  assert.deepEqual(persisted, [...currentGlossary, otherLanguageEntry]);
+});
+
+test("UC-001 treats DeepL root glossary languages as applicable to regional request variants", async () => {
+  const rootEntry: GlossaryEntry = {
+    source_term: "color",
+    target_term: "colour",
+    source_lang: "EN",
+    target_lang: "EN"
+  };
+  let providerGlossary: GlossaryEntry[] | undefined;
+  const service = createTranslationService({
+    machineTranslator: { async translate(input) { providerGlossary = input.glossary; return "intermediate"; } },
+    postEditor: { async edit() { return "final"; } },
+    glossaryPersistence: { async appendAtomic() {} }
+  });
+
+  await service.translate(request({ sourceLang: "EN-US", targetLang: "EN-GB", glossary: [rootEntry] }));
+
+  assert.deepEqual(providerGlossary, [rootEntry]);
 });
 
 test("UC-001 skips persistence when no glossary was uploaded", async () => {
