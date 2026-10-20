@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { parseGlossaryJson } from "../src/modules/glossary/validation";
+import { downloadTranslation } from "../src/modules/presentation/download";
 
 export default function HomePage() {
   const [sourceText, setSourceText] = useState("");
@@ -52,14 +53,8 @@ export default function HomePage() {
     }
   }
 
-  function downloadTranslation() {
-    const blob = new Blob([translation], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "gms-translation.txt";
-    link.click();
-    URL.revokeObjectURL(url);
+  function handleDownloadTranslation() {
+    downloadTranslation(translation);
   }
 
   return (
@@ -80,7 +75,7 @@ export default function HomePage() {
           <button type="submit" disabled={sourceText.trim() === "" || glossaryError !== "" || isSubmitting}>{isSubmitting ? "Translating…" : "Translate"}</button>
         </form>
         {error && <p className="error" role="alert">{error}</p>}
-        {translation && <section className="result" aria-labelledby="result-title"><h2 id="result-title">Final Translation</h2><p>{translation}</p><button type="button" onClick={downloadTranslation}>Download TXT</button></section>}
+        {translation && <section className="result" aria-labelledby="result-title"><h2 id="result-title">Final Translation</h2><p>{translation}</p><button type="button" onClick={handleDownloadTranslation}>Download TXT</button></section>}
       </section>
     </main>
   );
