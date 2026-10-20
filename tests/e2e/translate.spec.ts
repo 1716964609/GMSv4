@@ -64,6 +64,25 @@ test.describe("UC-001 browser workflow", () => {
     await expect(page.getByRole("heading", { name: "Final Translation" })).toHaveCount(0);
   });
 
+  test("rejects an Uploaded Glossary containing more than 1,000 entries before submission", async ({ page }) => {
+    await page.goto("/");
+    await page.getByLabel("Original Text").fill("Hello from E2E");
+    const entries = Array.from({ length: 1_001 }, (_, index) => ({
+      source_term: `term-${index}`,
+      target_term: `用語-${index}`,
+      source_lang: index % 2 === 0 ? "EN" : "DE",
+      target_lang: index % 2 === 0 ? "JA" : "EN"
+    }));
+    await page.getByLabel("Glossary JSON (optional)").setInputFiles({
+      name: "too-large.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(entries))
+    });
+
+    await expect(page.locator("p[role=alert]")).toHaveText("Glossary must contain no more than 1000 entries.");
+    await expect(page.getByRole("button", { name: "Translate" })).toBeDisabled();
+  });
+
   test("does not display a new successful Final Translation after an unsuccessful request", async ({ page }) => {
     await page.route("**/api/translate", async (route) => {
       await route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ error: "Translation could not be completed." }) });

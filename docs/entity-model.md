@@ -97,7 +97,7 @@ classDiagram
     TranslationRequest --> OriginalText : contains
     TranslationRequest --> UploadedGlossary : optionally includes
 
-    UploadedGlossary "1" o-- "0..*" GlossaryEntry : provides
+    UploadedGlossary "1" o-- "0..1000" GlossaryEntry : provides
 
     Glossary "1" o-- "0..*" GlossaryEntry : stores
 
@@ -198,12 +198,17 @@ It is not stored in the application database.
 ### 4.3 Uploaded Glossary
 
 An Uploaded Glossary is a temporary collection
-of Glossary Entries supplied by the Operator
-for the current Translation Request.
+of at most 1,000 Glossary Entries supplied by
+the Operator for the current Translation Request.
 
 The Uploaded Glossary is provided as a JSON file.
 
-It contains zero or more Glossary Entries.
+It contains zero to 1,000 Glossary Entries in
+total, including entries from mixed language pairs.
+
+This cardinality limit applies only to one uploaded
+JSON array. It does not limit the cumulative persistent
+Glossary collection.
 
 An Uploaded Glossary is represented as a JSON array
 of Glossary Entry objects.

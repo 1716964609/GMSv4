@@ -14,6 +14,21 @@ test("UC-001 glossary validation accepts the four canonical string fields", () =
   assert.deepEqual(parseGlossaryJson([]), []);
 });
 
+test("UC-001 glossary validation accepts the 1,000-entry boundary and rejects 1,001 entries", () => {
+  const entry = {
+    source_term: "term",
+    target_term: "用語",
+    source_lang: "EN",
+    target_lang: "JA"
+  };
+
+  assert.equal(parseGlossaryJson(Array.from({ length: 1_000 }, () => entry)).length, 1_000);
+  assert.throws(
+    () => parseGlossaryJson(Array.from({ length: 1_001 }, () => entry)),
+    /no more than 1000 entries/
+  );
+});
+
 test("UC-001 glossary validation rejects invalid JSON shapes", () => {
   assert.throws(() => parseGlossaryJson({}), /JSON array/);
   assert.throws(() => parseGlossaryJson([null]), /must be an object/);

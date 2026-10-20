@@ -1,10 +1,15 @@
 import type { GlossaryEntry } from "./types";
 
 const GLOSSARY_FIELDS = ["source_term", "target_term", "source_lang", "target_lang"];
+export const MAX_UPLOADED_GLOSSARY_ENTRIES = 1_000;
 
 export function parseGlossaryJson(value: unknown): GlossaryEntry[] {
   if (!Array.isArray(value)) {
     throw new Error("Glossary must be a JSON array.");
+  }
+
+  if (value.length > MAX_UPLOADED_GLOSSARY_ENTRIES) {
+    throw new Error(`Glossary must contain no more than ${MAX_UPLOADED_GLOSSARY_ENTRIES} entries.`);
   }
 
   return value.map((entry, index) => {
